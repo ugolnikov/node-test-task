@@ -1,0 +1,33 @@
+{
+	"name": "test-task",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.ts",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node app.ts",
+		"dev": "nodemon --exec tsx app.ts"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "module",
+	"devDependencies": {
+		"@types/better-sqlite3": "^7.6.13",
+		"@types/express": "^5.0.6",
+		"@types/jsonwebtoken": "^9.0.10",
+		"@types/node": "^25.0.9",
+		"prisma": "^7.3.0",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3"
+	},
+	"dependencies": {
+		"@prisma/adapter-better-sqlite3": "^7.3.0",
+		"@prisma/client": "^7.3.0",
+		"bcryptjs": "^3.0.3",
+		"dotenv": "^17.2.3",
+		"express": "^5.2.1",
+		"jsonwebtoken": "^9.0.3",
+		"nodemon": "^3.1.11"
+	}
+}

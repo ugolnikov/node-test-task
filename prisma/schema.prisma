@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  fname      String? // Фамилия
+  lname      String // Имя
+  patronymic String? // Отчество
+  birthdate  DateTime
+  email      String   @unique
+  password   String
+  role       Role     @default(USER)
+  status     Boolean  @default(true)
+}
+
+enum Role {
+  USER
+  ADMIN
+}
