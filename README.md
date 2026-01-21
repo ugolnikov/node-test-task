@@ -8,6 +8,7 @@ REST API для управления пользователями
 - TypeScript
 - Prisma ORM (SQLite)
 - JWT Auth
+- Postman
 
 ## Установка
 
