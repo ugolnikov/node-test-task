@@ -1,0 +1,257 @@
+{
+  "info": {
+    "_postman_id": "bd70b2f2-f150-4c1e-bb1e-15822a5c8de2",
+    "name": "Node Test Task - User Management API",
+    "description": "REST API for user management with JWT authentication.\n\n## Authentication\n\nThis API uses JWT Bearer token authentication. After login or registration, use the returned token in the Authorization header:  \n`Authorization: Bearer`\n\n## Base URL\n\n`http://localhost:3000`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "id": "6520e30d-1b96-42fb-af1d-a5ab4d0ba7ba",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fname\": \"John\",\n  \"lname\": \"Doe\",\n  \"patronymic\": \"Smith\",\n  \"birthdate\": \"1990-01-15\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"securePassword123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/user/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "user",
+                "register"
+              ]
+            },
+            "description": "Register a new user. Required fields: lname, email, password. Optional: fname, patronymic, birthdate."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "id": "048042e1-b809-4321-8cb1-b21bf9f51fe5",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"securePassword123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/user/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "user",
+                "login"
+              ]
+            },
+            "description": "Authenticate user and receive JWT token."
+          },
+          "response": []
+        }
+      ],
+      "id": "c57a474d-1496-48eb-9417-4f52874f2e8a",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "edab4bc6-3508-41ab-b7fd-c669e28384de",
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "id": "ebf46476-915f-4013-91e2-e0a2c189c217",
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              "// 1. Парсим JSON из ответа сервера\r",
+              "const responseData = pm.response.json();\r",
+              "\r",
+              "// 2. Ищем токен. Укажите здесь путь к полю, которое присылает ваш бэкенд.\r",
+              "// Чаще всего это: responseData.token или responseData.accessToken или responseData.data.token\r",
+              "const token = responseData.token || responseData.accessToken || (responseData.data && responseData.data.token);\r",
+              "\r",
+              "// 3. Проверяем, что запрос прошел успешно (код 200 или 201) и токен найден\r",
+              "if (pm.response.code >= 200 && pm.response.code < 300 && token) {\r",
+              "    \r",
+              "    // Сохраняем токен в переменную окружения\r",
+              "    pm.environment.set(\"token\", token);\r",
+              "    if(responseData.user.id){\r",
+              "        pm.environment.set(\"id\", responseData.user.id);\r",
+              "    }\r",
+              "    console.log(\"✅ Токен успешно получен и записан в переменную 'token'\");\r",
+              "} else {\r",
+              "    console.warn(\"⚠️ Токен не найден в ответе или API вернул ошибку\");\r",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "id": "107186ad-9a54-40e5-b4c8-83056fcfd2e9",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/user/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "user",
+                ""
+              ]
+            },
+            "description": "Get list of all users. Requires admin role."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "id": "9cb79a82-04b5-4bbb-9c18-7eece0dbcabb",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/user/:id",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "user",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{id}}"
+                }
+              ]
+            },
+            "description": "Get a specific user by ID. Admins can access any user, regular users can only access their own profile."
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle User Block Status",
+          "id": "caf7a3c2-084f-4fab-ba83-e153bdfdb2eb",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"block\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/user/:id/block",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "user",
+                ":id",
+                "block"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Block or unblock a user. Set block to true to block, false to unblock. Requires authentication."
+          },
+          "response": []
+        }
+      ],
+      "id": "8f12b8b9-5fa4-4320-84d3-c2d05b183fcd"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "id": "281abd7a-e78f-4d48-b060-545f02221e40",
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "id": "50cd405f-5b52-4b73-a9e0-ae056e878970",
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
