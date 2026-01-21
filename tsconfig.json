@@ -1,5 +1,13 @@
 {
 	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./*"],
+			"@lib/*": ["api/lib/*"],
+			"@controllers/*": ["api/controllers/*"],
+			"@middleware/*": ["api/middleware/*"],
+			"@routes/*": ["api/routes/*"]
+		},
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"target": "ES2023",

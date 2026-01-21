@@ -1,16 +1,16 @@
-import express from 'express'
 import {
 	getUser,
 	getUsers,
 	login,
 	register,
 	toggleStatus
-} from '../controllers/userController'
+} from '@controllers/userController'
 import {
 	authenticateToken,
 	canAccessUser,
 	requireAdmin
-} from '../middleware/auth'
+} from '@middleware/auth'
+import express from 'express'
 
 const router = express.Router()
 
