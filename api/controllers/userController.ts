@@ -77,7 +77,15 @@ export const getUser = async (req: express.Request, res: express.Response) => {
 		return res.status(403).json({ error: 'Нет доступа' })
 	}
 
-	res.json({ user })
+	res.json({
+		user: {
+			fname: user.fname,
+			lname: user.lname,
+			patronymic: user.patronymic,
+			birthdate: user.birthdate.toISOString().split('T')[0],
+			email: user.email
+		}
+	})
 }
 
 // Список всех юзеров (только админ)
@@ -101,12 +109,22 @@ export const toggleStatus = async (
 	res: express.Response
 ) => {
 	const id = parseId(req.params.id)
-	const { block } = req.body
+	const { status } = await prisma.user.findFirstOrThrow({ where: { id } })
+	const block = !status
 
 	const user = await prisma.user.update({
 		where: { id },
-		data: { status: !block }
+		data: { status: block }
 	})
 
-	res.json({ user, message: block ? 'Заблокирован' : 'Разблокирован' })
+	res.json({
+		user: {
+			id: user.id,
+			status: user.status,
+			fname: user.fname,
+			lname: user.lname,
+			patronymic: user.patronymic
+		},
+		message: block ? 'Заблокирован' : 'Разблокирован'
+	})
 }
